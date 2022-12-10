@@ -63,6 +63,7 @@ const deleteStudent = (socketId) => {
 }
 
 io.on('connection', socket => {
+    console.log("A user connected")
 
     // add new student
     socket.on("AddStudent", presentationId => {
@@ -92,6 +93,7 @@ io.on('connection', socket => {
 
     // handle disconnect
     socket.on('disconnect', () => {
+        console.log("a user disconnected")
         deletePresentation(socket.id)
         deleteStudent(socket.id)
     })
