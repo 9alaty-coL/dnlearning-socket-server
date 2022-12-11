@@ -7,8 +7,11 @@ const http = require('http').createServer(app);
 const io = socketIo(port, {
     cors: {
       origin: "*",
-      methods: ["GET", "POST"]
-    }
+      methods: ["GET", "POST"],
+      credentials: true,
+      transports: ['websocket', 'polling'],
+    },
+    allowEIO3: true,
   });
 
   
