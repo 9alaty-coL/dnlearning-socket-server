@@ -4,7 +4,7 @@ const port = process.env.PORT || 8080
 const app = require('express')();
 const http = require('http').createServer(app);
 
-const io = socketIo(http, {
+const io = socketIo(port, {
     cors: {
       origin: "*",
       methods: ["GET", "POST"]
@@ -37,6 +37,7 @@ const getPresentation = id => presentationList.find(p => p.id === id)
 
 const updateSlide = (id, newSlide) => {
     const p = getPresentation(id)
+    console.log(id, p)
     p.currentSlide = newSlide;
 }
 
