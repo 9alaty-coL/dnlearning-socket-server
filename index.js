@@ -40,8 +40,9 @@ const getPresentation = id => presentationList.find(p => p.id === id)
 
 const updateSlide = (id, newSlide) => {
     const p = getPresentation(id)
-    console.log(id, p)
-    p.currentSlide = newSlide;
+    if (p) {
+        p.currentSlide = newSlide;
+    }
 }
 
 const deletePresentation = id => {
@@ -70,7 +71,6 @@ const deleteStudent = (socketId) => {
 }
 
 io.on('connection', socket => {
-    console.log("A user connected")
 
     // add new student
     socket.on("AddStudent", presentationId => {
@@ -84,6 +84,7 @@ io.on('connection', socket => {
 
     // Change slide
     socket.on("ChangeSlide", (presentationId, newSlide) => {
+        console.log(presentationId, newSlide)
         updateSlide(presentationId, newSlide)
         for (let i of studentList) {
             if (i.presentationId === presentationId) {
