@@ -64,7 +64,7 @@ const getStudentByPresentationId = presentationId =>
 studentList.filter(student => student.presentationId === presentationId)
 
 const getStudentBySocketId = socketId =>
-studentList.filter(student => student.socketId === socketId)
+studentList.filter(student => student.socketId === socketId)[0]
 
 const deleteStudent = (socketId) => {
     studentList = studentList.filter(student => student.socketId !== socketId)
@@ -84,7 +84,6 @@ io.on('connection', socket => {
 
     // Change slide
     socket.on("ChangeSlide", (presentationId, newSlide) => {
-        console.log(presentationId, newSlide)
         updateSlide(presentationId, newSlide)
         for (let i of studentList) {
             if (i.presentationId === presentationId) {
@@ -96,7 +95,10 @@ io.on('connection', socket => {
     // Answer question
     socket.on("AnswerQuestion", answerIndex => {
         const student = getStudentBySocketId(socket.id)
-        io.to(getPresentation(student.presentationId).socketId).emit("AnsweredQuestion", answerIndex)
+        const pre = getPresentation(student.presentationId)
+        if (pre) {
+            io.to(pre.socketId).emit("AnsweredQuestion", answerIndex)
+        }
     })
 
     // handle disconnect
