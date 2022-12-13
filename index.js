@@ -94,9 +94,10 @@ io.on('connection', socket => {
     // Answer question
     socket.on("AnswerQuestion", answerIndex => {
         const student = getStudentBySocketId(socket.id)
-        const pre = getPresentation(student.presentationId)
-        if (pre) {
-            io.to(pre.socketId).emit("AnsweredQuestion", answerIndex)
+        for (let i of presentationList) {
+            if (student.presentationId && i.id === student.presentationId) {
+                io.to(i.socketId).emit("AnsweredQuestion", answerIndex)
+            }
         }
     })
 
