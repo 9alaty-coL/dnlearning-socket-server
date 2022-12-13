@@ -33,7 +33,6 @@ const io = socketIo(port, {
 var presentationList = []
 
 const addPresentation = (id, currentSlide, socketId) => 
-!presentationList.some(p => p.id === id) &&
 presentationList.push({ id, currentSlide, socketId })
 
 const getPresentation = id => presentationList.find(p => p.id === id)
