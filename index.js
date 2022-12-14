@@ -91,6 +91,14 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on("Reload", presentationId => {
+        for (let i of studentList) {
+            if (i.presentationId === presentationId) {
+                io.to(i.socketId).emit("Reloaded", presentationId)
+            }
+        }
+    })
+
     // Answer question
     socket.on("AnswerQuestion", answerIndex => {
         const student = getStudentBySocketId(socket.id)
