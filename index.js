@@ -70,7 +70,39 @@ const deleteStudent = (socketId) => {
     studentList = studentList.filter(student => student.socketId !== socketId)
 }
 
+
+/** Sample object
+ * {
+ *    socketId: dk124h,
+ *    userId: 1s2jhs2,
+ * }
+ */
+var userList = []
+
+const addUser = (userId, socketId) =>
+userList.push({ socketId, userId })
+
+const deleteUser = (socketId) => {
+    userList = userList.filter(user => user.socketId !== socketId)
+}
+
+/** Socket. */
+
 io.on('connection', socket => {
+
+    // add new user
+    socket.on("AddUser", userId => {
+        console.log(userId, "joined")
+        addUser(userId, socket.id)
+    })
+
+    socket.on("NotifyUser", (userId, message) => {
+        for (let i of userList) {
+            if (i.userId === userId) {
+                io.to(i.socketId).emit("Notify", message)
+            }
+        }
+    })
 
     // add new student
     socket.on("AddStudent", presentationId => {
@@ -106,5 +138,6 @@ io.on('connection', socket => {
         console.log("a user disconnected")
         deletePresentation(socket.id)
         deleteStudent(socket.id)
+        deleteUser(socket.id)
     })
 })
