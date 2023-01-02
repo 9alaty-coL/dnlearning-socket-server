@@ -33,7 +33,6 @@ const io = socketIo(port, {
 var presentationList = []
 
 const addPresentation = (id, currentSlide, socketId) => 
-!presentationList.some(p => p.id === id) &&
 presentationList.push({ id, currentSlide, socketId })
 
 const getPresentation = id => presentationList.find(p => p.id === id)
@@ -124,12 +123,21 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on("Reload", presentationId => {
+        for (let i of studentList) {
+            if (i.presentationId === presentationId) {
+                io.to(i.socketId).emit("Reloaded", presentationId)
+            }
+        }
+    })
+
     // Answer question
     socket.on("AnswerQuestion", answerIndex => {
         const student = getStudentBySocketId(socket.id)
-        const pre = getPresentation(student.presentationId)
-        if (pre) {
-            io.to(pre.socketId).emit("AnsweredQuestion", answerIndex)
+        for (let i of presentationList) {
+            if (student.presentationId && i.id === student.presentationId) {
+                io.to(i.socketId).emit("AnsweredQuestion", answerIndex)
+            }
         }
     })
 
