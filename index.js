@@ -85,6 +85,9 @@ const deleteUser = (socketId) => {
     userList = userList.filter(user => user.socketId !== socketId)
 }
 
+var messageBoxList = []
+var questionBoxList = []
+
 /** Socket. */
 
 io.on('connection', socket => {
@@ -93,6 +96,38 @@ io.on('connection', socket => {
     socket.on("AddUser", userId => {
         console.log(userId, "joined")
         addUser(userId, socket.id)
+    })
+
+    socket.on("AddMessageBox", presentationId => {
+        console.log('Message box joined')
+        messageBoxList.push({
+            socketId: socket.id,
+            presentationId: presentationId,
+        })
+    })
+
+    socket.on("AddQuestionBox", presentationId => {
+        console.log("Question box joined")
+        questionBoxList.push({
+            socketId: socket.id,
+            presentationId: presentationId,
+        })
+    })
+
+    socket.on("SendMessage", (presentationId, message) => {
+        for (const i of messageBoxList) {
+            if (i.presentationId === presentationId) {
+                io.to(i.socketId).emit("ReceiveMessageBox", message);
+            }
+        }
+    })
+
+    socket.on("SendQuestion", (presentationId, question) => {
+        for (const i of questionBoxList) {
+            if (i.presentationId === presentationId) {
+                io.to(i.socketId).emit("ReceiveQuestionBox", question);
+            }
+        }
     })
 
     socket.on("NotifyUser", (userId, message) => {
