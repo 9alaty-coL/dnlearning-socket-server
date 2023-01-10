@@ -138,6 +138,14 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on("NotifyListUser", (userIds, message) => {
+        for (let i of userList) {
+            if (userIds.find(userId => userId === i.userId) != null) {
+                io.to(i.socketId).emit("Notify", message)
+            }
+        }
+    })
+
     // add new student
     socket.on("AddStudent", presentationId => {
         addStudent(presentationId, socket.id)
