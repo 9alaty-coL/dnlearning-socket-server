@@ -130,6 +130,14 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on("UpdateQuestion", (presentationId, question) => {
+        for (const i of questionBoxList) {
+            if (i.presentationId === presentationId) {
+                io.to(i.socketId).emit("PollQuestion", question)
+            }
+        }
+    })
+
     socket.on("NotifyUser", (userId, message) => {
         for (let i of userList) {
             if (i.userId === userId) {
